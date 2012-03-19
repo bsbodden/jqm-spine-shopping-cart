@@ -1,0 +1,157 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<title>Chili's Fake Site</title> 
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1;"/> 
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
+	<link rel="stylesheet" type="text/css" href="lib/jquery.mobile.simpledialog.min.css" />
+	
+	<style>
+	.ui-li-multibubble .ui-li-count
+    {
+        float: right;
+    }
+    .ui-li-multibubble .ui-li-count:nth-child(odd)
+    {
+        margin-right: 5em;
+    }
+	</style>
+	
+	<!-- jQuery -->
+	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	
+	<!-- MVC: Spine.js and Mustache -->
+	<script src="lib/spine/spine.js" type="text/javascript" charset="utf-8"></script>
+    <script src="lib/spine/local.js" type="text/javascript" charset="utf-8"></script>
+	<script src="lib/jquery.mustache.js" type="text/javascript" charset="utf-8"></script>
+	
+	<!-- Pull in our Models and Controller -->
+    <script src="app/models/item.js" type="text/javascript" charset="utf-8"></script>
+    <script src="app/controllers/cart_item.js" type="text/javascript" charset="utf-8"></script>
+    <script src="app/controllers/shopping_cart.js" type="text/javascript" charset="utf-8"></script>
+
+	<!-- Application Initialization -->
+    <script src="app.init.js" type="text/javascript" charset="utf-8"></script>	
+	
+	<!-- jQuery Mobile -->
+	<script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
+	
+	<!-- jQuery Mobile Dependent Libraries -->
+	<script type="text/javascript" src="lib/jquery.mobile.simpledialog.min.js"></script>
+	
+	<!-- jQuery Format Currency Plugin -->
+	<script type="text/javascript" src="lib/jquery.formatCurrency-1.4.0.js"></script>
+
+	<!-- Mustache :-{)~ Template for MenuItem -->
+    <script type="text/x-mustache-tmpl" id="menuTemplate">
+		{{#categories}}
+		<li>{{name}}
+			<ul data-role="listview" data-filter="true">
+			    {{#items}}
+				<li data-icon="plus" id="menuitem_{{pid}}"> 
+				    <a href="#" class="addmenuitem" data-menuitemid="{{pid}}" data-price="{{price}}" data-name="{{title}}">
+					   <img src="{{image}}" alt="{{title}}"/>
+					   <h3>{{title}} - <span class="currency">{{price}}</span></h3>
+					   <p>{{description}}</p>
+					</a>
+				</li>
+                {{/items}}
+			</ul>
+	    </li>
+	    {{/categories}}
+    </script>
+
+    <!-- Mustache :-{)~ Template for CartItem -->
+    <script type="text/x-mustache-tmpl" id="cartItem">
+        <li id="cartitem_{{pid}}" price="{{price}}" data-icon='delete' class='ui-li-multibubble'>
+            <a href="#" class="removemenuitem" data-menuitemid="{{pid}}">{{name}}</a>
+            <span class="ui-li-count"><span id="item-total" class="currency">{{total}}</span></span>
+            <span class="ui-li-count" id="qty">{{quantity}}</span>
+			<!-- div data-role='controlgroup' data-type='horizontal'>
+	            <a href="#" data-role="button" data-icon='plus' class="add"></a>
+	            <a href="#" data-role="button" data-icon='minus' class="remove"></a>
+	        </div -->
+        </li>
+    </script>
+
+    <!-- Mustache :-{)~ Template for ShoppingCart -->
+    <script type="text/x-mustache-tmpl" id="shoppingCart">
+        <div id="cart">
+            <ul data-role="listview" data-inset="true" class="items">
+				<li data-role="list-divider" id="cart_top">Your Cart</li>
+				<li data-theme="a" id="cart_bottom">
+				    <a href="#">Total
+				        <span class="ui-li-count">
+				            <span id="total" class="currency">0.00</span>
+				        </span>
+				    </a>
+			    </li>
+            </ul>
+        </div>
+        <button id="dump" data-role="button">Dump the cart!</button>
+    </script>
+</head> 
+<body> 
+
+<!-- ********* -->
+<!-- HOME PAGE -->
+<!-- ********* -->
+<section data-role="page" id="home">
+	<header data-role="header">
+		<h1>Chili's</h1>
+		<nav data-role="navbar">
+			<ul>
+				<li><a href="#home" class="ui-btn-active">Home</a></li>
+				<li><a href="#menu">Menu</a></li>
+				<li><a href="#order">My Order</a></li>
+			</ul>
+		</nav>
+	</header>
+	<div data-role="content">	
+		<div style="text-align: center;">
+			<img src="images/logo.png" alt="Logo">
+		</div>
+		<p>Welcome to Chili's fake jQuery Mobile Site</p>
+		<p>Lose weight, fast!</p>
+	</div>
+	<footer data-role="footer" data-position="fixed"><h4><a href="#home">Home</a></h4></footer>
+</section><!-- /page -->
+
+<!-- ********* -->
+<!-- MENU PAGE -->
+<!-- ********* -->
+<section data-role="page" id="menu">
+	<header data-role="header">
+		<a href="#home" data-role="button" data-rel="back" data-icon="back" >Back</a>
+		<h1>Menu</h1>
+		<a href="#order" data-icon="grid">My Order</a>
+	</header>
+
+    <div data-role="content">
+		<ul data-role="listview" data-filter="true" id="menu_items">
+			<!-- menu will be rendered here! -->
+		</ul>
+	</div>
+
+	<footer data-role="footer" data-position="fixed"><h4><a href="#home">Home</a></h4></footer>
+</section><!-- /page -->
+
+<!-- ********** -->
+<!-- ORDER PAGE -->
+<!-- ********** -->
+<section data-role="page" id="order">
+	<header data-role="header">
+		<a href="#home" data-role="button" data-rel="back" data-icon="back" >Back</a>
+		<h1>My Order</h1>
+		<a href="#menu" data-icon="grid">Menu</a>
+	</header>
+
+    <div data-role="content">
+		<div id="theCart">Foo</div>
+	</div>
+
+	<footer data-role="footer" data-position="fixed"><h4><a href="#home">Home</a></h4></footer>
+</section><!-- /page -->
+
+</body>
+</html>
